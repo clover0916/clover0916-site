@@ -1,15 +1,10 @@
-"use client";
-
-import { useRouter } from "next/navigation";
 import { Link } from "react-scroll";
-import NextLink from "next/link";
 
 export default function AppBar() {
-  const router = useRouter();
   return (
     <nav className="appBar">
       <div className="text-xl font-bold">
-        <NextLink href="/">Clover_Midori</NextLink>
+        <a href="/">Clover_Midori</a>
       </div>
       <div className="sm:flex gap-8 hidden">
         <Link
@@ -19,8 +14,6 @@ export default function AppBar() {
           onClick={() => {
             if (location.pathname != "/") {
               location.href = "/";
-            } else {
-              router.push("/");
             }
           }}
         >
@@ -33,8 +26,6 @@ export default function AppBar() {
           onClick={() => {
             if (location.pathname != "/") {
               location.href = "/#projects";
-            } else {
-              router.push("/#projects");
             }
           }}
         >
@@ -47,8 +38,6 @@ export default function AppBar() {
           onClick={() => {
             if (location.pathname != "/") {
               location.href = "/#contact";
-            } else {
-              router.push("/#contact");
             }
           }}
         >

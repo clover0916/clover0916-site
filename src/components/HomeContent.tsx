@@ -1,4 +1,6 @@
 "use client";
+
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faDiscord,
@@ -10,24 +12,25 @@ import {
   faCheck,
   faCopy,
 } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
 import { useSpring, animated } from "@react-spring/web";
-import styles from "./Home.module.css";
-import { LinkButton } from "./components/LinkButton";
-import { motion } from "framer-motion";
+import { LinkButton } from "./LinkButton";
+import { motion } from "motion/react";
+import type { GetImageResult } from "astro";
 
 type IconProps = {
   style?: React.CSSProperties;
+  image?: GetImageResult;
 };
 
-const Icon = (props: IconProps) => (
+const Icon = ({ image, ...props }: IconProps) => (
   <img
     className="rounded-full shadow-lg"
-    src="/clover.png"
-    alt="Clover_Midori"
+    src={image?.src}
+    {...image?.attributes}
     width={200}
     height={200}
     {...props}
+    alt="Clover_Midori"
   />
 );
 
@@ -36,21 +39,26 @@ const AnimatedH1 = animated.h1 as any;
 const AnimatedP = animated.p as any;
 const AnimatedSpan = animated.span as any;
 
-export default function Home() {
+interface HomeContentProps {
+  images: {
+    clover: GetImageResult;
+    bot: GetImageResult;
+    tubeMusic: GetImageResult;
+  };
+}
+
+export default function HomeContent({ images }: HomeContentProps) {
   const [isCopied, setIsCopied] = useState(false);
 
-  const copyToClipboard =
-    (name: string): React.MouseEventHandler<SVGSVGElement> =>
-    (event) => {
-      navigator.clipboard.writeText(name);
-      setIsCopied(true);
-      setTimeout(() => {
-        setIsCopied(false);
-      }, 1000);
-    };
+  const copyToClipboard = (name: string) => () => {
+    navigator.clipboard.writeText(name);
+    setIsCopied(true);
+    setTimeout(() => {
+      setIsCopied(false);
+    }, 1000);
+  };
 
   const nameSprings = useSpring({
-    config: {},
     from: { x: 20, opacity: 0 },
     to: { x: 0, opacity: 1 },
   });
@@ -73,48 +81,37 @@ export default function Home() {
   });
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between">
+    <main className="flex min-h-screen flex-col items-center justify-between w-full">
       <div
-        className="flex h-screen justify-evenly w-full flex-col-reverse md:flex-row"
+        className="flex h-screen justify-evenly w-full flex-col-reverse md:flex-row px-4"
         id="about"
       >
         <div className="flex flex-col justify-center">
           <AnimatedH1
-            className={
-              "text-5xl lg:text-6xl font-bold mt-4 text-center md:text-left"
-            }
-            style={{
-              ...nameSprings,
-            }}
+            className="text-5xl lg:text-6xl font-bold mt-4 text-center md:text-left"
+            style={nameSprings}
           >
             クローバーみどり
           </AnimatedH1>
           <AnimatedP
             className="text-xl mt-2 text-gray-400 text-center md:text-left"
-            style={{
-              ...bioSprings,
-            }}
+            style={bioSprings}
           >
             いろいろやってます
           </AnimatedP>
         </div>
         <div className="flex flex-col items-center justify-center">
-          <AnimatedIcon
-            style={{
-              ...iconSprings,
-            }}
-          />
+          <AnimatedIcon style={iconSprings} image={images.clover} />
           <AnimatedSpan
-            className="mt-6 text-gray-400"
-            style={{
-              ...iconDescSprings,
-            }}
+            className="mt-6 text-gray-400 text-center"
+            style={iconDescSprings}
           >
             2023/3下旬頃にIllustratorで作ったアイコン
           </AnimatedSpan>
         </div>
       </div>
-      <div className={styles.projects} id="projects">
+
+      <div className="flex flex-col justify-items-center text-center min-h-screen w-full pt-20" id="projects">
         <motion.h2
           className="text-3xl font-bold p-4"
           initial={{ opacity: 0, y: 80 }}
@@ -124,27 +121,29 @@ export default function Home() {
         >
           Projects
         </motion.h2>
-        <div className={styles.cardContainer}>
+        <div className="mt-2 flex gap-8 flex-1 justify-center items-center flex-col lg:flex-row px-4 pb-20">
+          {/* Clover_Bot Card */}
           <motion.div
-            className={"shadow-lg " + styles.card}
+            className="shadow-lg flex flex-col w-full max-w-[22rem] h-[28rem] bg-white rounded-[10px] overflow-hidden"
             initial={{ opacity: 0, y: 80 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ ease: "easeOut" }}
             viewport={{ once: true, margin: "-200px" }}
           >
-            <div className={styles.cardMedia}>
+            <div className="w-full h-2/3">
               <img
-                src="/bot.png"
-                alt="Clover_Midori"
-                style={{ objectFit: "cover" }}
+                src={images.bot.src}
+                {...images.bot.attributes}
+                alt="Clover_Bot"
+                className="h-full w-full object-cover"
               />
             </div>
-            <div className={styles.cardContent}>
-              <div className={styles.cardText}>
+            <div className="h-1/3 flex flex-col justify-between text-black">
+              <div className="text-left py-4 px-6">
                 <p className="text-2xl">Clover_Bot</p>
                 <p className="text-sm text-gray-700">Discord Bot</p>
               </div>
-              <div className={styles.cardActions}>
+              <div className="flex pb-4 px-4 justify-end gap-2">
                 <LinkButton
                   href="https://bot.clover-midori.net"
                   content="詳細"
@@ -158,35 +157,29 @@ export default function Home() {
               </div>
             </div>
           </motion.div>
+
+          {/* 11Tube Music Card */}
           <motion.div
-            className={"shadow-lg " + styles.card}
+            className="shadow-lg flex flex-col w-full max-w-[22rem] h-[28rem] bg-white rounded-[10px] overflow-hidden"
             initial={{ opacity: 0, y: 80 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{
-              ease: "easeOut",
-            }}
+            transition={{ ease: "easeOut" }}
             viewport={{ once: true, margin: "-200px" }}
           >
-            <div
-              className={styles.cardMedia}
-              style={{
-                backgroundColor: "#692f2f",
-              }}
-            >
+            <div className="w-full h-2/3 bg-[#692f2f] flex items-center justify-center p-[10%]">
               <img
-                src="/11Tube_Music.png"
+                src={images.tubeMusic.src}
+                {...images.tubeMusic.attributes}
                 alt="11Tube Music"
-                style={{ objectFit: "contain", padding: "10%" }}
+                className="max-h-full max-w-full object-contain"
               />
             </div>
-            <div className={styles.cardContent}>
-              <div className={styles.cardText}>
+            <div className="h-1/3 flex flex-col justify-between text-black">
+              <div className="text-left py-4 px-6">
                 <p className="text-2xl">11Tube Music</p>
-                <p className="text-sm text-gray-700">
-                  Youtube Music for Windows 11
-                </p>
+                <p className="text-sm text-gray-700">Youtube Music for Windows 11</p>
               </div>
-              <div className={styles.cardActions}>
+              <div className="flex pb-4 px-4 justify-end gap-2">
                 <LinkButton
                   href="https://github.com/clover0916/11Tube-Music"
                   content="詳細"
@@ -201,12 +194,13 @@ export default function Home() {
           </motion.div>
         </div>
       </div>
+
       <div
-        className="flex flex-col items-center justify-center h-80 my-8 w-full"
+        className="flex flex-col items-center justify-center h-80 my-8 w-full px-4"
         id="contact"
       >
         <h2 className="text-3xl font-bold pb-8">Contact</h2>
-        <div className={styles.contactsContainer}>
+        <div className="w-full flex flex-col md:flex-row gap-8 md:gap-32 items-center justify-center">
           <div className="flex items-center">
             <FontAwesomeIcon icon={faDiscord} className="h-8 pr-4" />
             <span className="text-xl">clover_0916</span>

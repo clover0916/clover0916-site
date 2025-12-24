@@ -1,0 +1,23 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import HomeContent from '@/components/HomeContent';
+import { getImage } from "astro:assets";
+import cloverPng from "@/assets/clover.png";
+import botPng from "@/assets/bot.png";
+import tubeMusicPng from "@/assets/11Tube_Music.png";
+
+const cloverOptimized = await getImage({ src: cloverPng, format: 'webp', width: 400, height: 400 });
+const botOptimized = await getImage({ src: botPng, format: 'webp', width: 400 });
+const tubeMusicOptimized = await getImage({ src: tubeMusicPng, format: 'webp', width: 400 });
+---
+
+<Layout>
+  <HomeContent 
+    client:load 
+    images={{
+      clover: cloverOptimized,
+      bot: botOptimized,
+      tubeMusic: tubeMusicOptimized
+    }} 
+  />
+</Layout>

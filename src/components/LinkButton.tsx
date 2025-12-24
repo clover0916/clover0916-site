@@ -1,8 +1,7 @@
 import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
-import { motion } from "framer-motion";
-import React from "react";
+import { motion } from "motion/react";
 
 type Props = {
   href: string;
@@ -53,8 +52,8 @@ export const LinkButton = (props: Props) => {
         <motion.span
           variants={variants}
           animate={thankYou ? "thank" : ""}
-          onAnimationComplete={(definition) => {
-            if (props.thankYou) {
+          onAnimationComplete={() => {
+            if (thankYou && props.thankYou) {
               location.href = props.href;
             }
           }}
@@ -66,3 +65,4 @@ export const LinkButton = (props: Props) => {
     </a>
   );
 };
+

@@ -1,6 +1,9 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --background-image-gradient-radial: radial-gradient(var(--tw-gradient-stops));
+  --background-image-gradient-conic: conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops));
+}
 
 :root {
   --foreground-rgb: 0, 0, 0;
@@ -41,7 +44,7 @@ html.lenis {
 body {
   background: rgb(var(--background-rgb));
   color: rgb(var(--foreground-rgb));
-  font-family: var(--font-inter), var(--font-noto-sans-jp), sans-serif;
+  font-family: 'Inter', 'Noto Sans JP', sans-serif;
 }
 
 .main-container {

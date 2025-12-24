@@ -1,5 +1,5 @@
-"use client";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
+import React from "react";
 
 export default function AnimationProvider({
   children,
