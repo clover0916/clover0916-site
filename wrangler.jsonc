@@ -1,0 +1,7 @@
+{
+  "name": "clover0916-site",
+  "compatibility_date": "2025-12-23",
+  "assets": {
+    "directory": "./dist"
+  }
+}
