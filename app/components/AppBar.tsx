@@ -2,13 +2,14 @@
 
 import { useRouter } from "next/navigation";
 import { Link } from "react-scroll";
+import NextLink from "next/link";
 
 export default function AppBar() {
   const router = useRouter();
   return (
     <nav className="appBar">
       <div className="text-xl font-bold">
-        <a href="/">Clover_Midori</a>
+        <NextLink href="/">Clover_Midori</NextLink>
       </div>
       <div className="sm:flex gap-8 hidden">
         <Link

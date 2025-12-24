@@ -32,6 +32,9 @@ const Icon = (props: IconProps) => (
 );
 
 const AnimatedIcon = animated(Icon);
+const AnimatedH1 = animated.h1 as any;
+const AnimatedP = animated.p as any;
+const AnimatedSpan = animated.span as any;
 
 export default function Home() {
   const [isCopied, setIsCopied] = useState(false);
@@ -76,7 +79,7 @@ export default function Home() {
         id="about"
       >
         <div className="flex flex-col justify-center">
-          <animated.h1
+          <AnimatedH1
             className={
               "text-5xl lg:text-6xl font-bold mt-4 text-center md:text-left"
             }
@@ -85,15 +88,15 @@ export default function Home() {
             }}
           >
             クローバーみどり
-          </animated.h1>
-          <animated.p
+          </AnimatedH1>
+          <AnimatedP
             className="text-xl mt-2 text-gray-400 text-center md:text-left"
             style={{
               ...bioSprings,
             }}
           >
             いろいろやってます
-          </animated.p>
+          </AnimatedP>
         </div>
         <div className="flex flex-col items-center justify-center">
           <AnimatedIcon
@@ -101,14 +104,14 @@ export default function Home() {
               ...iconSprings,
             }}
           />
-          <animated.span
+          <AnimatedSpan
             className="mt-6 text-gray-400"
             style={{
               ...iconDescSprings,
             }}
           >
             2023/3下旬頃にIllustratorで作ったアイコン
-          </animated.span>
+          </AnimatedSpan>
         </div>
       </div>
       <div className={styles.projects} id="projects">

@@ -24,7 +24,7 @@ export const LinkButton = (props: Props) => {
   const variants = {
     thank: {
       width: [60, 110],
-      transition: { duration: 0.3, ease: [0.06, 0.67, 0.4, 0.99] },
+      transition: { duration: 0.3, ease: [0.06, 0.67, 0.4, 0.99] as const },
     },
   };
 
