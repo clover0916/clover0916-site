@@ -17,6 +17,7 @@ import { motion } from "motion/react";
 import type React from "react";
 import { useState } from "react";
 import { LinkButton } from "./LinkButton";
+import { RevealText } from "./RevealText";
 
 type IconProps = {
 	style?: React.CSSProperties;
@@ -32,6 +33,22 @@ const Icon = ({ image, ...props }: IconProps) => (
 		height={200}
 		{...props}
 		alt="Clover_Midori"
+	/>
+);
+
+const AnimatedBorder = ({
+	delay = 0,
+	className = "",
+}: {
+	delay?: number;
+	className?: string;
+}) => (
+	<motion.div
+		className={`h-[1px] w-full bg-neutral-600/50 origin-left ${className}`}
+		initial={{ scaleX: 0 }}
+		whileInView={{ scaleX: 1 }}
+		viewport={{ once: true }}
+		transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay }}
 	/>
 );
 
@@ -87,34 +104,44 @@ export default function HomeContent({ images }: HomeContentProps) {
 				className="flex h-svh justify-evenly w-full flex-col-reverse md:flex-row px-4 relative"
 				id="about"
 			>
-				<div className="absolute bottom-0 w-full divide-y divide-neutral-600/50 border-t border-b">
+				<div className="absolute bottom-0 w-full">
+					<AnimatedBorder />
 					<div className="flex flex-col gap-2 pl-2">
 						<div className="flex flex-row items-center gap-2">
 							<div className=" text-neutral-200 text-3xl font-light">
-								クローバーみどり
+								<RevealText text="クローバーみどり" delay={0.5} />
 							</div>
 							<div className="text-xl text-neutral-200 font-light italic font-inter">
-								[kɯɾoːbaː midoɾi]
+								<RevealText text="[kɯɾoːbaː midoɾi]" delay={0.7} />
 							</div>
 						</div>
 					</div>
+					<AnimatedBorder delay={0.1} />
 					<div className="flex flex-row w-full h-full pl-2">
-						<div className="text-9xl font-medium">Clover_Midori</div>
+						<div className="text-9xl font-medium">
+							<RevealText text="Clover_Midori" delay={0.9} />
+						</div>
 						<div className="flex-1 bg-[repeating-linear-gradient(135deg,transparent,transparent_8px,rgba(255,255,255,.1)_8px,rgba(255,255,255,.1)_9px)]"></div>
 					</div>
+					<AnimatedBorder delay={0.2} />
 					<div className="flex flex-row items-center pl-2">
 						<p className="text-neutral-300 max-w-3xl py-1">
-							Software Developer / Enginner / Designer / Tech Enthusiast
+							<RevealText
+								text="Software Developer / Enginner / Designer / Tech Enthusiast"
+								delay={1.1}
+							/>
 						</p>
 					</div>
+					<AnimatedBorder delay={0.3} />
 					<div className="flex flex-col gap-2 pl-2">
 						<p className="text-neutral-300 py-2 max-w-3xl ">
-							Hi! I'm Clover_Midori, a passionate software developer and tech
-							enthusiast. I love creating innovative solutions and exploring new
-							technologies. Welcome to my personal site where I share my
-							projects and ideas.
+							<RevealText
+								text="Hi! I'm Clover_Midori, a passionate software developer and tech enthusiast. I love creating innovative solutions and exploring new technologies. Welcome to my personal site where I share my projects and ideas."
+								delay={1.3}
+							/>
 						</p>
 					</div>
+					<AnimatedBorder delay={0.4} />
 				</div>
 			</div>
 
