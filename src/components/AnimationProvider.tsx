@@ -1,20 +1,20 @@
-import { motion, AnimatePresence } from "motion/react";
-import React from "react";
+import { AnimatePresence, motion } from "motion/react";
+import type React from "react";
 
 export default function AnimationProvider({
-  children,
+	children,
 }: {
-  children: React.ReactNode;
+	children: React.ReactNode;
 }) {
-  return (
-    <AnimatePresence mode="wait" onExitComplete={() => window.scrollTo(0, 0)}>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-      >
-        {children}
-      </motion.div>
-    </AnimatePresence>
-  );
+	return (
+		<AnimatePresence mode="wait" onExitComplete={() => window.scrollTo(0, 0)}>
+			<motion.div
+				initial={{ opacity: 0 }}
+				animate={{ opacity: 1 }}
+				exit={{ opacity: 0 }}
+			>
+				{children}
+			</motion.div>
+		</AnimatePresence>
+	);
 }

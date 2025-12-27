@@ -1,71 +1,76 @@
 @import "tailwindcss";
 
 @theme {
-  --background-image-gradient-radial: radial-gradient(var(--tw-gradient-stops));
-  --background-image-gradient-conic: conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops));
+	--font-inter: "Inter", sans-serif;
+	--background-image-gradient-radial: radial-gradient(var(--tw-gradient-stops));
+	--background-image-gradient-conic: conic-gradient(
+		from 180deg at 50% 50%,
+		var(--tw-gradient-stops)
+	);
 }
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --foreground-white-rgb: 0, 0, 0;
-  --background-rgb: 255, 255, 255;
-  --background-white-rgb: 0, 0, 0;
+	--foreground-rgb: 0, 0, 0;
+	--foreground-white-rgb: 0, 0, 0;
+	--background-rgb: 255, 255, 255;
+	--background-white-rgb: 0, 0, 0;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --foreground-white-rgb: 0, 0, 0;
-    --background-rgb: 0, 0, 0;
-    --background-white-rgb: 255, 255, 255;
-  }
+	:root {
+		--foreground-rgb: 255, 255, 255;
+		--foreground-white-rgb: 0, 0, 0;
+		--background-rgb: 0, 0, 0;
+		--background-white-rgb: 255, 255, 255;
+	}
 }
 
 html.lenis {
-  height: auto;
+	height: auto;
 }
 
 .lenis.lenis-smooth {
-  scroll-behavior: auto;
+	scroll-behavior: auto;
 }
 
 .lenis.lenis-smooth [data-lenis-prevent] {
-  overscroll-behavior: contain;
+	overscroll-behavior: contain;
 }
 
 .lenis.lenis-stopped {
-  overflow: hidden;
+	overflow: hidden;
 }
 
 .lenis.lenis-scrolling iframe {
-  pointer-events: none;
+	pointer-events: none;
 }
 
 body {
-  background: rgb(var(--background-rgb));
-  color: rgb(var(--foreground-rgb));
-  font-family: 'Inter', 'Noto Sans JP', sans-serif;
+	background: rgb(var(--background-rgb));
+	color: rgb(var(--foreground-rgb));
+	font-family:
+		var(--font-pp-neue-montreal), "Inter", "Noto Sans JP", sans-serif;
 }
 
 .main-container {
-  flex: 1 1 0%;
-  display: flex;
-  min-height: 100vh;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  padding-top: 5rem;
+	flex: 1 1 0%;
+	display: flex;
+	min-height: 100vh;
+	flex-direction: column;
+	align-items: center;
+	justify-content: space-between;
+	padding-top: 5rem;
 }
 
 .appBar {
-  padding: 1.5rem 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: fixed;
-  width: 100%;
-  background-color: rgba(var(--background-rgb), 0.5);
-  backdrop-filter: blur(4px);
-  height: 5rem;
-  z-index: 100;
+	padding: 1.5rem 2rem;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	position: fixed;
+	width: 100%;
+	background-color: rgba(var(--background-rgb), 0.5);
+	backdrop-filter: blur(4px);
+	height: 5rem;
+	z-index: 100;
 }

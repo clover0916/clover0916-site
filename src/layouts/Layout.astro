@@ -1,23 +1,24 @@
 ---
-import '@/styles/globals.css';
-import '@fontsource/inter/400.css';
-import '@fontsource/inter/700.css';
-import '@fontsource/noto-sans-jp/400.css';
-import '@fontsource/noto-sans-jp/700.css';
-import AppBar from '@/components/AppBar';
-import Footer from '@/components/Footer';
-import Provider from '@/components/Provider';
-import AnimationProvider from '@/components/AnimationProvider';
+import "@/styles/globals.css";
+import { Font } from "astro:assets";
+import "@fontsource/inter/400.css";
+import "@fontsource/inter/700.css";
+import "@fontsource/noto-sans-jp/400.css";
+import "@fontsource/noto-sans-jp/700.css";
+import AnimationProvider from "@/components/AnimationProvider";
+import AppBar from "@/components/AppBar";
+import Background3D from "@/components/Background3D";
+import Crosshair from "@/components/Crosshair";
+import Footer from "@/components/Footer";
+import Provider from "@/components/Provider";
 
 interface Props {
-  title?: string;
-  description?: string;
+	title?: string;
+	description?: string;
 }
 
-const { 
-  title = "Clover_Midori", 
-  description = "いろいろやってます" 
-} = Astro.props;
+const { title = "Clover_Midori", description = "いろいろやってます" } =
+	Astro.props;
 ---
 
 <!DOCTYPE html>
@@ -27,12 +28,15 @@ const {
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <meta name="generator" content={Astro.generator} />
+    <Font cssVariable="--font-pp-neue-montreal" />
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta property="og:image" content="/icon_512.png" />
   </head>
   <body>
     <Provider client:load>
+      <Crosshair client:load />
+      <Background3D client:load />
       <AppBar client:load />
       <AnimationProvider client:load>
         <slot />
