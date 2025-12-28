@@ -44,7 +44,7 @@ const AnimatedBorder = ({
 	className?: string;
 }) => (
 	<motion.div
-		className={`h-[1px] w-full bg-neutral-600/50 origin-left ${className}`}
+		className={`h-px w-full bg-neutral-600/50 origin-left ${className}`}
 		initial={{ scaleX: 0 }}
 		whileInView={{ scaleX: 1 }}
 		viewport={{ once: true }}

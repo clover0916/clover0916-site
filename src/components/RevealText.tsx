@@ -17,8 +17,8 @@ export const RevealText = ({ text, className, delay = 0 }: RevealTextProps) => {
 			viewport={{ once: true }}
 			transition={{ staggerChildren: 0.05, delayChildren: delay }}
 		>
-			{text.split(" ").map((word, index) => (
-				<span key={index} className="inline-block whitespace-pre-wrap">
+			{text.split(" ").map((word) => (
+				<span key={`${word}`} className="inline-block whitespace-pre-wrap">
 					<span className="inline-block overflow-hidden align-bottom pb-[0.1em] -mb-[0.1em]">
 						<motion.span
 							className="inline-block"
