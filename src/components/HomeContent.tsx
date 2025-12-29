@@ -11,11 +11,13 @@ import {
 	faCopy,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { animated, useSpring } from "@react-spring/web";
-import type { GetImageResult } from "astro";
-import { motion } from "motion/react";
+import { useStore } from "@nanostores/react";
+import { SpeakerHighIcon } from "@phosphor-icons/react";
+import { animated } from "@react-spring/web";
+import { AnimatePresence, motion } from "motion/react";
 import type React from "react";
 import { useState } from "react";
+import { isLoading as isLoadingStore } from "@/stores/loadingStore";
 import { LinkButton } from "./LinkButton";
 import { RevealText } from "./RevealText";
 
@@ -39,14 +41,16 @@ const Icon = ({ image, ...props }: IconProps) => (
 const AnimatedBorder = ({
 	delay = 0,
 	className = "",
+	trigger = true,
 }: {
 	delay?: number;
 	className?: string;
+	trigger?: boolean;
 }) => (
 	<motion.div
 		className={`h-px w-full bg-neutral-600/50 origin-left ${className}`}
 		initial={{ scaleX: 0 }}
-		whileInView={{ scaleX: 1 }}
+		whileInView={trigger ? { scaleX: 1 } : undefined}
 		viewport={{ once: true }}
 		transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay }}
 	/>
@@ -67,6 +71,8 @@ interface HomeContentProps {
 
 export default function HomeContent({ images }: HomeContentProps) {
 	const [isCopied, setIsCopied] = useState(false);
+	const [isPlaying, setIsPlaying] = useState(false);
+	const isLoading = useStore(isLoadingStore);
 
 	const copyToClipboard = (name: string) => () => {
 		navigator.clipboard.writeText(name);
@@ -76,27 +82,14 @@ export default function HomeContent({ images }: HomeContentProps) {
 		}, 1000);
 	};
 
-	const _nameSprings = useSpring({
-		from: { x: 20, opacity: 0 },
-		to: { x: 0, opacity: 1 },
-	});
-
-	const _bioSprings = useSpring({
-		from: { x: 20, opacity: 0 },
-		to: { x: 0, opacity: 1 },
-		delay: 200,
-	});
-
-	const _iconSprings = useSpring({
-		from: { y: 100, opacity: 0 },
-		to: { y: 0, opacity: 1 },
-	});
-
-	const _iconDescSprings = useSpring({
-		from: { y: 100, opacity: 0 },
-		to: { y: 0, opacity: 1 },
-		delay: 200,
-	});
+	const playAudio = () => {
+		const audio = document.getElementById("name-audio") as HTMLAudioElement;
+		if (audio) {
+			audio.currentTime = 0;
+			audio.play();
+			setIsPlaying(true);
+		}
+	};
 
 	return (
 		<main className="flex min-h-screen flex-col items-center justify-between w-full">
@@ -105,43 +98,131 @@ export default function HomeContent({ images }: HomeContentProps) {
 				id="about"
 			>
 				<div className="absolute bottom-0 w-full">
-					<AnimatedBorder />
+					<AnimatedBorder trigger={!isLoading} />
 					<div className="flex flex-col gap-2 pl-2">
 						<div className="flex flex-row items-center gap-2">
 							<div className=" text-neutral-200 text-3xl font-light">
-								<RevealText text="クローバーみどり" delay={0.5} />
+								<RevealText
+									text="クローバーみどり"
+									delay={0.5}
+									trigger={!isLoading}
+								/>
 							</div>
 							<div className="text-xl text-neutral-200 font-light italic font-inter">
-								<RevealText text="[kɯɾoːbaː midoɾi]" delay={0.7} />
+								<RevealText
+									text="[kɯɾoːbaː midoɾi]"
+									delay={0.7}
+									trigger={!isLoading}
+								/>
 							</div>
+							<motion.button
+								type="button"
+								onClick={playAudio}
+								className="text-neutral-400 hover:text-neutral-200 transition-colors cursor-pointer relative w-6 h-6 flex items-center justify-center"
+								aria-label="Play pronunciation"
+								initial={{ scale: 0, opacity: 0 }}
+								whileInView={!isLoading ? { scale: 1, opacity: 1 } : undefined}
+								viewport={{ once: true }}
+								transition={{
+									delay: 0.9,
+									type: "spring",
+									stiffness: 260,
+									damping: 20,
+								}}
+							>
+								<AnimatePresence mode="wait" initial={false}>
+									{isPlaying ? (
+										<motion.div
+											key="wave"
+											className="flex items-center gap-1 h-full"
+											initial={{ opacity: 0, scale: 0.8 }}
+											animate={{ opacity: 1, scale: 1 }}
+											exit={{ opacity: 0, scale: 0.8 }}
+											transition={{ duration: 0.15 }}
+										>
+											{[...Array(4)].map((_, i) => (
+												<motion.div
+													// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+													key={i}
+													className="w-0.5 bg-current rounded-full"
+													initial={{ height: 4 }}
+													animate={{ height: [6, 16, 6] }}
+													transition={{
+														duration: 0.5,
+														repeat: Number.POSITIVE_INFINITY,
+														delay: i * 0.1,
+														ease: "easeInOut",
+													}}
+												/>
+											))}
+										</motion.div>
+									) : (
+										<motion.div
+											key="speaker"
+											initial={{ opacity: 0, scale: 0.8 }}
+											animate={{ opacity: 1, scale: 1 }}
+											exit={{ opacity: 0, scale: 0.8 }}
+											transition={{ duration: 0.15 }}
+										>
+											<SpeakerHighIcon size={24} />
+										</motion.div>
+									)}
+								</AnimatePresence>
+							</motion.button>
+							<audio
+								id="name-audio"
+								preload="none"
+								onEnded={() => setIsPlaying(false)}
+								onPause={() => setIsPlaying(false)}
+							>
+								<source
+									src="/assets/audio/speech.opus"
+									type="audio/ogg; codecs=opus"
+								/>
+								<source src="/assets/audio/speech.mp3" type="audio/mpeg" />
+								<source src="/assets/audio/speech.wav" type="audio/wav" />
+								<track
+									kind="captions"
+									src="/assets/audio/speech.vtt"
+									srcLang="ja"
+									label="Japanese"
+									default
+								/>
+							</audio>
 						</div>
 					</div>
-					<AnimatedBorder delay={0.1} />
+					<AnimatedBorder delay={0.1} trigger={!isLoading} />
 					<div className="flex flex-row w-full h-full pl-2">
 						<div className="text-9xl font-medium">
-							<RevealText text="Clover_Midori" delay={0.9} />
+							<RevealText
+								text="Clover_Midori"
+								delay={0.9}
+								trigger={!isLoading}
+							/>
 						</div>
 						<div className="flex-1 bg-[repeating-linear-gradient(135deg,transparent,transparent_8px,rgba(255,255,255,.1)_8px,rgba(255,255,255,.1)_9px)]"></div>
 					</div>
-					<AnimatedBorder delay={0.2} />
+					<AnimatedBorder delay={0.2} trigger={!isLoading} />
 					<div className="flex flex-row items-center pl-2">
 						<p className="text-neutral-300 max-w-3xl py-1">
 							<RevealText
 								text="Software Developer / Enginner / Designer / Tech Enthusiast"
 								delay={1.1}
+								trigger={!isLoading}
 							/>
 						</p>
 					</div>
-					<AnimatedBorder delay={0.3} />
+					<AnimatedBorder delay={0.3} trigger={!isLoading} />
 					<div className="flex flex-col gap-2 pl-2">
 						<p className="text-neutral-300 py-2 max-w-3xl ">
 							<RevealText
 								text="Hi! I'm Clover_Midori, a passionate software developer and tech enthusiast. I love creating innovative solutions and exploring new technologies. Welcome to my personal site where I share my projects and ideas."
 								delay={1.3}
+								trigger={!isLoading}
 							/>
 						</p>
 					</div>
-					<AnimatedBorder delay={0.4} />
+					<AnimatedBorder delay={0.4} trigger={!isLoading} />
 				</div>
 			</div>
 
@@ -152,7 +233,7 @@ export default function HomeContent({ images }: HomeContentProps) {
 				<motion.h2
 					className="text-3xl font-bold p-4"
 					initial={{ opacity: 0, y: 80 }}
-					whileInView={{ opacity: 1, y: 0 }}
+					whileInView={!isLoading ? { opacity: 1, y: 0 } : undefined}
 					transition={{ ease: "easeOut" }}
 					viewport={{ once: true, margin: "-100px" }}
 				>
@@ -163,7 +244,7 @@ export default function HomeContent({ images }: HomeContentProps) {
 					<motion.div
 						className="shadow-lg flex flex-col w-full max-w-[22rem] h-[28rem] bg-white rounded-[10px] overflow-hidden"
 						initial={{ opacity: 0, y: 80 }}
-						whileInView={{ opacity: 1, y: 0 }}
+						whileInView={!isLoading ? { opacity: 1, y: 0 } : undefined}
 						transition={{ ease: "easeOut" }}
 						viewport={{ once: true, margin: "-200px" }}
 					>
@@ -199,7 +280,7 @@ export default function HomeContent({ images }: HomeContentProps) {
 					<motion.div
 						className="shadow-lg flex flex-col w-full max-w-[22rem] h-[28rem] bg-white rounded-[10px] overflow-hidden"
 						initial={{ opacity: 0, y: 80 }}
-						whileInView={{ opacity: 1, y: 0 }}
+						whileInView={!isLoading ? { opacity: 1, y: 0 } : undefined}
 						transition={{ ease: "easeOut" }}
 						viewport={{ once: true, margin: "-200px" }}
 					>

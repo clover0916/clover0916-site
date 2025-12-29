@@ -1,25 +1,21 @@
-import {
-	AsciiRenderer,
-	Float,
-	PerformanceMonitor,
-	useGLTF,
-} from "@react-three/drei";
+import { Float, PerformanceMonitor, useGLTF } from "@react-three/drei";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import round from "lodash/round";
 import { useEffect, useRef, useState } from "react";
-import * as THREE from "three";
+import { type Group, MathUtils, MeshStandardMaterial } from "three";
+import LoadingScreen from "./LoadingScreen";
 
-const material1 = new THREE.MeshStandardMaterial({
+const material1 = new MeshStandardMaterial({
 	color: "#4C9A6A",
 	roughness: 0.2,
 	metalness: 0.1,
 });
-const material2 = new THREE.MeshStandardMaterial({
+const material2 = new MeshStandardMaterial({
 	color: "#4A6F58",
 	roughness: 0.2,
 	metalness: 0.1,
 });
-const material3 = new THREE.MeshStandardMaterial({
+const material3 = new MeshStandardMaterial({
 	color: "#41C474",
 	roughness: 0.2,
 	metalness: 0.1,
@@ -27,7 +23,7 @@ const material3 = new THREE.MeshStandardMaterial({
 
 function Model() {
 	const { nodes } = useGLTF("/Icon_Color.glb") as any;
-	const meshRef = useRef<THREE.Group>(null);
+	const meshRef = useRef<Group>(null);
 	const mouse = useRef({ x: 0, y: 0 });
 	const regress = useThree((state) => state.performance.regress);
 
@@ -50,12 +46,12 @@ function Model() {
 			const targetRotationX = mouse.current.y * 0.5; // Adjust sensitivity
 			const targetRotationY = mouse.current.x * 0.5;
 
-			meshRef.current.rotation.x = THREE.MathUtils.lerp(
+			meshRef.current.rotation.x = MathUtils.lerp(
 				meshRef.current.rotation.x,
 				targetRotationX,
 				0.02,
 			);
-			meshRef.current.rotation.y = THREE.MathUtils.lerp(
+			meshRef.current.rotation.y = MathUtils.lerp(
 				meshRef.current.rotation.y,
 				targetRotationY,
 				0.02,
@@ -103,33 +99,36 @@ export default function Background3D() {
 	const [dpr, setDpr] = useState(1.5);
 
 	return (
-		<div className="fixed top-0 left-0 w-full h-full -z-10 pointer-events-none">
-			<Canvas
-				shadows
-				dpr={dpr}
-				performance={{ min: 0.5 }}
-				camera={{ position: [0, 0, 15], fov: 15 }}
-			>
-				<PerformanceMonitor
-					onChange={({ factor }) => setDpr(round(0.5 + 1.5 * factor, 1))}
+		<>
+			<LoadingScreen />
+			<div className="fixed top-0 left-0 w-full h-full -z-10 pointer-events-none">
+				<Canvas
+					shadows
+					dpr={dpr}
+					performance={{ min: 0.5 }}
+					camera={{ position: [0, 0, 15], fov: 15 }}
 				>
-					<ambientLight intensity={0.05} />
-					<spotLight
-						position={[10, 10, 10]}
-						angle={0.5}
-						penumbra={1}
-						intensity={2}
-						castShadow
-					/>
-					<pointLight position={[-10, -10, -10]} intensity={1.5} />
-					<directionalLight position={[0, 5, 5]} intensity={1.5} />
+					<PerformanceMonitor
+						onChange={({ factor }) => setDpr(round(0.5 + 1.5 * factor, 1))}
+					>
+						<ambientLight intensity={0.05} />
+						<spotLight
+							position={[10, 10, 10]}
+							angle={0.5}
+							penumbra={1}
+							intensity={2}
+							castShadow
+						/>
+						<pointLight position={[-10, -10, -10]} intensity={1.5} />
+						<directionalLight position={[0, 5, 5]} intensity={1.5} />
 
-					<Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
-						<Model />
-					</Float>
-				</PerformanceMonitor>
-			</Canvas>
-		</div>
+						<Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
+							<Model />
+						</Float>
+					</PerformanceMonitor>
+				</Canvas>
+			</div>
+		</>
 	);
 }
 

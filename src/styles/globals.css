@@ -69,8 +69,11 @@ body {
 	justify-content: space-between;
 	position: fixed;
 	width: 100%;
-	background-color: rgba(var(--background-rgb), 0.5);
-	backdrop-filter: blur(4px);
 	height: 5rem;
 	z-index: 100;
+}
+
+.mask-to-t {
+	-webkit-mask: linear-gradient(#000 0%, #0000 100%);
+	mask: linear-gradient(#000 0%, #0000 100%);
 }

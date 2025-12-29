@@ -48,5 +48,21 @@ export default defineConfig({
 	integrations: [react()],
 	vite: {
 		plugins: [tailwindcss()],
+		build: {
+			rollupOptions: {
+				output: {
+					manualChunks(id) {
+						if (id.includes("node_modules")) {
+							if (id.includes("@react-three")) {
+								return "vendor-react-three";
+							}
+							if (id.includes("three")) {
+								return "vendor-three";
+							}
+						}
+					},
+				},
+			},
+		},
 	},
 });

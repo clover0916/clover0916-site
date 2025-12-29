@@ -6,14 +6,20 @@ interface RevealTextProps {
 	text: string;
 	className?: string;
 	delay?: number;
+	trigger?: boolean;
 }
 
-export const RevealText = ({ text, className, delay = 0 }: RevealTextProps) => {
+export const RevealText = ({
+	text,
+	className,
+	delay = 0,
+	trigger = true,
+}: RevealTextProps) => {
 	return (
 		<motion.span
 			className={`inline-block ${className}`}
 			initial="hidden"
-			whileInView="visible"
+			whileInView={trigger ? "visible" : "hidden"}
 			viewport={{ once: true }}
 			transition={{ staggerChildren: 0.05, delayChildren: delay }}
 		>

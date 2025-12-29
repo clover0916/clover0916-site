@@ -3,6 +3,7 @@ import { Link } from "react-scroll";
 export default function AppBar() {
 	return (
 		<nav className="appBar">
+			<div className="absolute inset-0 -z-10 mask-to-t backdrop-blur-lg bg-[rgba(var(--background-rgb),0.5)]" />
 			<div className="text-xl font-bold">
 				<a href="/">Clover_Midori</a>
 			</div>
