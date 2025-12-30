@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { isLoading } from "@/stores/loadingStore";
 
 export default function LoadingScreen() {
-	const { active, progress } = useProgress();
+	const { progress } = useProgress();
 	const [finished, setFinished] = useState(false);
 	const [fadeOut, setFadeOut] = useState(false);
 
@@ -66,7 +66,7 @@ export default function LoadingScreen() {
 
 	return (
 		<div
-			className={`fixed inset-0 z-[200] flex items-center justify-center bg-black transition-opacity duration-500 ${
+			className={`fixed inset-0 z-200 flex items-center justify-center bg-black transition-opacity duration-500 ${
 				fadeOut ? "opacity-0" : "opacity-100"
 			}`}
 		>

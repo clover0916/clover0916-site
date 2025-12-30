@@ -1,11 +1,18 @@
 import react from "@astrojs/react";
 import tailwindcss from "@tailwindcss/vite";
-import { defineConfig } from "astro/config";
+import { defineConfig, fontProviders } from "astro/config";
 
 // https://astro.build/config
 export default defineConfig({
 	experimental: {
 		fonts: [
+			{
+				name: "Geist Mono",
+				provider: fontProviders.fontsource(),
+				cssVariable: "--font-geist-mono",
+				weights: [400, 700],
+				fallbacks: ["monospace"],
+			},
 			{
 				provider: "local",
 				name: "PP Neue Montreal",

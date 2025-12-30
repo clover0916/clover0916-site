@@ -2,7 +2,12 @@ import { Float, PerformanceMonitor, useGLTF } from "@react-three/drei";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import round from "lodash/round";
 import { useEffect, useRef, useState } from "react";
-import { type Group, MathUtils, MeshStandardMaterial } from "three";
+import {
+	type Group,
+	MathUtils,
+	MeshStandardMaterial,
+	WebGLRenderer,
+} from "three";
 import LoadingScreen from "./LoadingScreen";
 
 const material1 = new MeshStandardMaterial({
@@ -22,6 +27,7 @@ const material3 = new MeshStandardMaterial({
 });
 
 function Model() {
+	// biome-ignore lint/suspicious/noExplicitAny: GLTF result type is complex
 	const { nodes } = useGLTF("/Icon_Color.glb") as any;
 	const meshRef = useRef<Group>(null);
 	const mouse = useRef({ x: 0, y: 0 });
@@ -105,6 +111,7 @@ export default function Background3D() {
 				<Canvas
 					shadows
 					dpr={dpr}
+					gl={async (props) => new WebGLRenderer(props)}
 					performance={{ min: 0.5 }}
 					camera={{ position: [0, 0, 15], fov: 15 }}
 				>
