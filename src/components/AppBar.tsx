@@ -1,3 +1,4 @@
+import { navigate } from "astro:transitions/client";
 import { Link } from "react-scroll";
 
 export default function AppBar() {
@@ -14,7 +15,7 @@ export default function AppBar() {
 					smooth={true}
 					onClick={() => {
 						if (location.pathname !== "/") {
-							location.href = "/";
+							navigate("/");
 						}
 					}}
 				>
@@ -26,7 +27,7 @@ export default function AppBar() {
 					smooth={true}
 					onClick={() => {
 						if (location.pathname !== "/") {
-							location.href = "/#projects";
+							navigate("/#projects");
 						}
 					}}
 				>
@@ -38,7 +39,7 @@ export default function AppBar() {
 					smooth={true}
 					onClick={() => {
 						if (location.pathname !== "/") {
-							location.href = "/#contact";
+							navigate("/#contact");
 						}
 					}}
 				>

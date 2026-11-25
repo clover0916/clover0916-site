@@ -1,6 +1,8 @@
+import { useStore } from "@nanostores/react";
 import { gsap } from "gsap";
 import type React from "react";
 import { type RefObject, useEffect, useRef } from "react";
+import { isFocused } from "@/stores/focusStore";
 
 const lerp = (a: number, b: number, n: number): number => (1 - n) * a + n * b;
 
@@ -35,6 +37,18 @@ const Crosshair: React.FC<CrosshairProps> = ({
 
 	const mouse = useRef({ x: 0, y: 0 });
 	const magneticPos = useRef<{ x: number; y: number } | null>(null);
+
+	const focused = useStore(isFocused);
+	// Page-wide crosshair is only active in focus mode (Esc leaves it).
+	const active = containerRef ? true : focused;
+
+	// Hide the native cursor while the crosshair is active (page-wide only).
+	useEffect(() => {
+		if (containerRef || !active) return;
+		const root = document.documentElement;
+		root.classList.add("crosshair-cursor");
+		return () => root.classList.remove("crosshair-cursor");
+	}, [containerRef, active]);
 
 	useEffect(() => {
 		const handleMouseMove = (ev: Event) => {
@@ -100,9 +114,8 @@ const Crosshair: React.FC<CrosshairProps> = ({
 
 		target.addEventListener("mousemove", onMouseMove);
 
-		const enter = (e: Event) => {
-			const target = e.target as HTMLElement;
-			if (!boxRef.current || !target) return;
+		const enter = (target: HTMLElement) => {
+			if (!boxRef.current) return;
 
 			const { width, height, left, top } = target.getBoundingClientRect();
 
@@ -172,29 +185,44 @@ const Crosshair: React.FC<CrosshairProps> = ({
 			requestAnimationFrame(render);
 		};
 
-		const links: NodeListOf<HTMLAnchorElement> = containerRef?.current
-			? containerRef.current.querySelectorAll("a")
-			: document.querySelectorAll("a");
-
-		links.forEach((link) => {
-			link.addEventListener("mouseenter", enter);
-			link.addEventListener("mouseleave", leave);
-		});
+		// Event delegation so links added later (e.g. after a client-side page
+		// navigation) are picked up too.
+		const hoverRoot: HTMLElement | Document = containerRef?.current || document;
+		let hoveredLink: HTMLElement | null = null;
+		const onOver = (e: Event) => {
+			const link = (e.target as Element | null)?.closest?.("a");
+			if (!link || link === hoveredLink) return;
+			hoveredLink = link;
+			enter(link);
+		};
+		const onOut = (e: Event) => {
+			if (!hoveredLink) return;
+			const next = (e as MouseEvent).relatedTarget as Node | null;
+			if (next && hoveredLink.contains(next)) return;
+			hoveredLink = null;
+			leave();
+		};
+		const onSwap = () => {
+			hoveredLink = null;
+			leave();
+		};
+		hoverRoot.addEventListener("mouseover", onOver);
+		hoverRoot.addEventListener("mouseout", onOut);
+		document.addEventListener("astro:after-swap", onSwap);
 
 		return () => {
 			target.removeEventListener("mousemove", handleMouseMove);
 			target.removeEventListener("mousemove", onMouseMove);
-			links.forEach((link) => {
-				link.removeEventListener("mouseenter", enter);
-				link.removeEventListener("mouseleave", leave);
-			});
+			hoverRoot.removeEventListener("mouseover", onOver);
+			hoverRoot.removeEventListener("mouseout", onOut);
+			document.removeEventListener("astro:after-swap", onSwap);
 		};
 	}, [containerRef]);
 
 	return (
 		<div
 			ref={cursorRef}
-			className={`${containerRef ? "absolute" : "fixed"} top-0 left-0 w-full h-full pointer-events-none z-10000`}
+			className={`${containerRef ? "absolute" : "fixed"} top-0 left-0 w-full h-full pointer-events-none z-10000 transition-opacity duration-300 ${active ? "opacity-100" : "opacity-0"}`}
 		>
 			<div
 				ref={boxRef}

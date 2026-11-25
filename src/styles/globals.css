@@ -78,3 +78,11 @@ body {
 	-webkit-mask: linear-gradient(#000 0%, #0000 100%);
 	mask: linear-gradient(#000 0%, #0000 100%);
 }
+
+/* Hide the native cursor so the crosshair is the only pointer (mouse devices only). */
+@media (hover: hover) and (pointer: fine) {
+	html.crosshair-cursor,
+	html.crosshair-cursor * {
+		cursor: none !important;
+	}
+}

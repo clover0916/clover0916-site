@@ -1,6 +1,7 @@
 ---
 import "@/styles/globals.css";
 import { Font } from "astro:assets";
+import { ClientRouter } from "astro:transitions";
 import "@fontsource/inter/400.css";
 import "@fontsource/inter/700.css";
 import "@fontsource/noto-sans-jp/400.css";
@@ -9,16 +10,20 @@ import AnimationProvider from "@/components/AnimationProvider";
 import AppBar from "@/components/AppBar";
 import Background3D from "@/components/Background3D";
 import Crosshair from "@/components/Crosshair";
+import FocusOverlay from "@/components/FocusOverlay";
 import Footer from "@/components/Footer";
 import Provider from "@/components/Provider";
+import ScrollBlur from "@/components/ScrollBlur";
 
 interface Props {
 	title?: string;
 	description?: string;
 }
 
-const { title = "Clover_Midori", description = "いろいろやってます" } =
-	Astro.props;
+const {
+	title = "Clover_Midori",
+	description = "Clover_Midori（クローバーみどり）のポートフォリオ。VRChat 向けツールとリアルタイム配信基盤をつくるエンジニア。",
+} = Astro.props;
 ---
 
 <!DOCTYPE html>
@@ -33,11 +38,15 @@ const { title = "Clover_Midori", description = "いろいろやってます" } =
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta property="og:image" content="/icon_512.png" />
+    <ClientRouter />
   </head>
   <body>
+    <!-- Persisted across page navigations so Three.js / hints are not re-initialised -->
+    <Crosshair client:load transition:persist="crosshair" />
+    <FocusOverlay client:load transition:persist="focus-overlay" />
+    <Background3D client:load transition:persist="background-3d" />
+    <ScrollBlur client:load transition:persist="scroll-blur" />
     <Provider client:load>
-      <Crosshair client:load />
-      <Background3D client:load />
       <AppBar client:load />
       <AnimationProvider client:load>
         <slot />
