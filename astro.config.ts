@@ -4,19 +4,19 @@ import { defineConfig, fontProviders } from "astro/config";
 
 // https://astro.build/config
 export default defineConfig({
-	experimental: {
-		fonts: [
-			{
-				name: "Geist Mono",
-				provider: fontProviders.fontsource(),
-				cssVariable: "--font-geist-mono",
-				weights: [400, 700],
-				fallbacks: ["monospace"],
-			},
-			{
-				provider: "local",
-				name: "PP Neue Montreal",
-				cssVariable: "--font-pp-neue-montreal",
+	fonts: [
+		{
+			name: "Geist Mono",
+			provider: fontProviders.fontsource(),
+			cssVariable: "--font-geist-mono",
+			weights: [400, 700],
+			fallbacks: ["monospace"],
+		},
+		{
+			provider: fontProviders.local(),
+			name: "PP Neue Montreal",
+			cssVariable: "--font-pp-neue-montreal",
+			options: {
 				variants: [
 					{
 						weight: 100,
@@ -50,10 +50,13 @@ export default defineConfig({
 					},
 				],
 			},
-		],
-	},
+		},
+	],
 	integrations: [react()],
-	vite: {
+  vite: {
+    server: {
+      allowedHosts: ["astro.clover0916.tech"]
+    },
 		plugins: [tailwindcss()],
 		build: {
 			rollupOptions: {
